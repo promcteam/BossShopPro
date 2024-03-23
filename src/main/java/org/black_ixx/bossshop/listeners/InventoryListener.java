@@ -10,6 +10,7 @@ import org.black_ixx.bossshop.misc.MathTools;
 import org.black_ixx.bossshop.misc.Misc;
 import org.black_ixx.bossshop.misc.userinput.BSAnvilHolder;
 import org.black_ixx.bossshop.settings.Settings;
+import org.black_ixx.bossshoppro.folia.CrossScheduler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -23,7 +24,6 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.WeakHashMap;
 
@@ -60,16 +60,13 @@ public class InventoryListener implements Listener {
             plugin.getClassManager()
                     .getMessageHandler()
                     .sendMessage("Main.CloseShop", p, null, (Player) e.getPlayer(), holder.getShop(), holder, null);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (!ClassManager.manager.getPlugin().getAPI().isValidShop(p.getOpenInventory())) {
-                        Misc.playSound(p,
-                                ClassManager.manager.getSettings()
-                                        .getPropertyString(Settings.SOUND_SHOP_CLOSE, this, null));
-                    }
+            CrossScheduler.run(() -> {
+                if (!ClassManager.manager.getPlugin().getAPI().isValidShop(p.getOpenInventory())) {
+                    Misc.playSound(p,
+                            ClassManager.manager.getSettings()
+                                    .getPropertyString(Settings.SOUND_SHOP_CLOSE, this, null));
                 }
-            }.runTask(plugin);
+            });
         }
     }
 

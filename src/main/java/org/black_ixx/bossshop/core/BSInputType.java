@@ -5,12 +5,11 @@ import org.black_ixx.bossshop.core.prices.BSPriceType;
 import org.black_ixx.bossshop.core.rewards.BSRewardType;
 import org.black_ixx.bossshop.managers.ClassManager;
 import org.black_ixx.bossshop.misc.userinput.BSUserInput;
+import org.black_ixx.bossshoppro.folia.CrossScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-
-import java.util.concurrent.Callable;
 
 public enum BSInputType {
 
@@ -37,12 +36,9 @@ public enum BSInputType {
                         return;
                     }
                     ClassManager.manager.getPlayerDataHandler().enteredInput(p, text);
-                    Bukkit.getScheduler().callSyncMethod(plugin, new Callable<Boolean>() {
-                        @Override
-                        public Boolean call() {
-                            buy.purchase(p, shop, holder, clickType, rewardtype, priceType, event, plugin, false);
-                            return true;
-                        }
+                    CrossScheduler.callSyncMethod(() -> {
+                        buy.purchase(p, shop, holder, clickType, rewardtype, priceType, event, plugin, false);
+                        return true;
                     });
                 }
             }.getUserInput(p, null, null, buy.getInputText(clickType));
@@ -67,12 +63,9 @@ public enum BSInputType {
                 @Override
                 public void receivedInput(final Player p, String text) {
                     ClassManager.manager.getPlayerDataHandler().enteredInput(p, text);
-                    Bukkit.getScheduler().callSyncMethod(plugin, new Callable<Boolean>() {
-                        @Override
-                        public Boolean call() {
-                            buy.purchase(p, shop, holder, clickType, rewardtype, priceType, event, plugin, false);
-                            return true;
-                        }
+                    CrossScheduler.callSyncMethod(() -> {
+                        buy.purchase(p, shop, holder, clickType, rewardtype, priceType, event, plugin, false);
+                        return true;
                     });
                 }
             }.getUserInput(p, null, null, buy.getInputText(clickType));
